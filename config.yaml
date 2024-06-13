@@ -1,0 +1,49 @@
+#微博配置
+#==============================================================================
+weibi_pages: 1
+weibo_headers:
+  authority: 'weibo.com'
+  method: 'GET'
+  scheme: 'https'
+  Accept: 'application/json, text/plain, */*'
+  Accept-Encoding: 'gzip, deflate, br, zstd'
+  Accept-Language: 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7'
+  Client-Version: 'v2.45.38'
+  Dnt: '1'
+  Priority: 'u=1, i'
+  Sec-Ch-Ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
+  Sec-Ch-Ua-Mobile: '?0'
+  Sec-Ch-Ua-Platform: '"Windows"'
+  Sec-Fetch-Dest: 'empty'
+  Sec-Fetch-Mode: 'cors'
+  Sec-Fetch-Site: 'same-origin'
+  Server-Version: 'v2024.06.05.2'
+  User-Agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0'
+  X-Requested-With: 'XMLHttpRequest'
+  X-Xsrf-Token: 'tMd3QBGKsmXjM94AtxgtFatg'
+#  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件，
+#  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
+#  一定要将Cookie的内容加上引号，否则会报错。
+  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ALF=1720236333; SUB=_2A25LZVx9DeRhGeNI7VAX-CrJyjiIHXVoG9G1rDV8PUJbkNANLVD4kW1NSF2BWKB1mu_O97UHY3Ec0Sq5xP_YyvB4; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; ULV=1718096186386:5:2:1:9410392538362.47.1718096186344:1717744075120; XSRF-TOKEN=ESt05ShjlyFTUEB0AcVVLwz6; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCdYKMSeosgEqh8hWYi7flPp_xPK3KlgmmXLEwC5QiURZ8FgL5-wBei6lRuOzwwdL3rvpqgNn4LVAzNQhJkOio-A=='
+#===============================================================================
+
+#QQ空间配置
+#==============================================================================
+qzone_pages: 1
+qzone_headers:
+  User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
+  authority: "user.qzone.qq.com"
+  sec-ch-ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
+  accept: "*/*"
+  sec-ch-ua-mobile: "?0"
+  sec-fetch-site: "same-origin"
+  sec-fetch-mode: "cors"
+  sec-fetch-dest: "empty"
+  accept-language: "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7"
+  Dnt: "1"
+  Priority: "u=1, i"
+  #  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件，
+  #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
+  #  一定要将Cookie的内容加上引号，否则会报错。
+  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; suid=ek168813540229055590; _qimei_fingerprint=6a78fe4f2c148e41e8b5a712f987686c; QZ_FE_WEBP_SUPPORT=1; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; openid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; ptui_loginuin=437460307; uin=o0437460307; p_uin=o0437460307; Loading=Yes; qqmusic_uin=0437460307; qqmusic_fromtag=6; pgv_info=ssid=s7379670139; cpu_performance_v8=18; welcomeflash=549236781_1; rv2=802B4ECA97F58CE15A09733E955E807C8A09000A318B2B3F26; property20=372C085B02DA0E3909098DDC6FE443D6D06A9BE57AD4C55B6ADAE6BE0F114570FE609E4760D987C1; skey=@kIqRbVJWF; pt4_token=xxh1-zL*cxi38hyToOQySuKkhLeoCjOiM0pk9CEGQ7U_; p_skey=jrAj2nm63X1tZ6ekdXxk-3qrPJhpr1p6YI1Xmd3JFPg_; qzmusicplayer=qzone_player_437460307_1718174477492; qqmusic_key=@kIqRbVJWF; tgw_l7_route=a7272f4b3963314daeab17751d097a2e"
+#==============================================================================
