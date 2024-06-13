@@ -1,7 +1,6 @@
 import requests
 from requests.exceptions import RequestException, HTTPError, ConnectionError, Timeout
 import yaml
-import time
 import logging
 
 # 设置日志记录，只输出到控制台，不保存到文件
@@ -17,7 +16,6 @@ class WeiboScraper:
 
     def fetch_posts(self, uid):
         results = []
-        retries = 10  # Number of retries
 
         for page in range(1, self.pages + 1):
             params = {
@@ -26,25 +24,21 @@ class WeiboScraper:
                 'feature': '0'
             }
 
-            for attempt in range(retries):
-                try:
-                    response = requests.get(self.url, headers=self.headers, params=params, timeout=10)
-                    response.raise_for_status()
-                    data = response.json()
-                    if 'data' in data and 'list' in data['data']:
-                        for item in data['data']['list']:
-                            post = {
-                                'time': item.get('created_at', ''),
-                                'text': item.get('text_raw', '')
-                            }
-                            results.append(post)
-                    break  # If the request was successful, break out of the retry loop
-                except (HTTPError, ConnectionError, Timeout, RequestException) as e:
-                    logging.error(f"Attempt {attempt + 1} failed: {e}")
-                    time.sleep(2 ** attempt)
-                    if attempt == retries - 1:
-                        logging.error("All retry attempts failed.")
-                        raise
+            try:
+                response = requests.get(self.url, headers=self.headers, params=params, timeout=10)
+                response.raise_for_status()
+                data = response.json()
+                if 'data' in data and 'list' in data['data']:
+                    for item in data['data']['list']:
+                        post = {
+                            'time': item.get('created_at', ''),
+                            'text': item.get('text_raw', '')
+                        }
+                        results.append(post)
+            except (HTTPError, ConnectionError, Timeout, RequestException) as e:
+                logging.error(f"Request failed: {e}")
+                raise
+
         return results
 
     def save_posts_to_file(self, posts, filename='weibo_posts.txt'):

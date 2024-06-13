@@ -2,7 +2,6 @@ import requests
 import re
 import json
 import yaml
-import time
 import logging
 
 # 设置日志记录，只输出到控制台，不保存到文件
@@ -54,9 +53,7 @@ class QQZoneScraper:
                 'need_private_comment': '1',
             }
 
-            retries = 20
-            for attempt in range(retries):
-
+            try:
                 response = self.session.get(base_url, headers=self.headers, params=params, timeout=10)
                 if response.ok:
                     data = response.text
@@ -79,13 +76,12 @@ class QQZoneScraper:
                             return all_messages
                     else:
                         raise ValueError("Failed to parse JSONP response")
-                    break
                 else:
-                    logging.error(f"Attempt {attempt + 1} failed: {e}")
-                    time.sleep(2 ** attempt)
-                    if attempt == retries - 1:
-                        logging.error("All retry attempts failed.")
-                        raise ConnectionError(f"All retry attempts failed.Request failed with status code: {response.status_code}")
+                    logging.error(f"Request failed with status code: {response.status_code}")
+                    raise ConnectionError(f"Request failed with status code: {response.status_code}")
+            except Exception as e:
+                logging.error(f"An error occurred: {e}")
+                raise
 
         return all_messages
 

@@ -1,3 +1,6 @@
+import random
+import time
+
 from PyQt6.QtCore import QThread, pyqtSignal
 from scr.read_data import ExcelProcessor
 from scr.weibo import WeiboScraper
@@ -12,15 +15,16 @@ class Worker(QThread):
     result = pyqtSignal(str)
     finished = pyqtSignal()
 
-    def __init__(self, folder_path):
+    def __init__(self, folder_path, save_folder_path):
         super().__init__()
         self.folder_path = folder_path
+        self.save_folder_path = save_folder_path
         self._is_running = True
 
     def run(self):
         try:
             current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-            root_folder_path = os.path.join(os.getcwd(), f"Processed_{current_time}")
+            root_folder_path = os.path.join(self.save_folder_path, f"Processed_{current_time}")
             os.makedirs(root_folder_path, exist_ok=True)
 
             files_to_process = []
@@ -78,24 +82,51 @@ class Worker(QThread):
 
                 weibo_id = row['微博']
                 if not pd.isna(weibo_id):
-                    try:
-                        posts = weibo.fetch_posts(weibo_id)
-                        weibo_filename = os.path.join(student_folder_path, "weibo.txt")
-                        weibo.save_posts_to_file(posts, weibo_filename)
-                        self.result.emit(
-                            f"\n已保存学生 {row['姓名']} 的微博 (ID: {weibo_id}) 的帖子到 {weibo_filename}")
-                    except Exception as e:
-                        self.result.emit(f"\n⚠获取学生 {row['姓名']} 微博 ID {weibo_id} 的帖子时出错: {str(e)}")
+                    retry_count = 0
+                    success = False
+                    while retry_count < 5 and not success:
+                        try:
+                            posts = weibo.fetch_posts(weibo_id)
+                            weibo_filename = os.path.join(student_folder_path, "weibo.txt")
+                            weibo.save_posts_to_file(posts, weibo_filename)
+                            self.result.emit(
+                                f"\n已保存学生 {row['姓名']} 的微博 (ID: {weibo_id}) 的帖子到 {weibo_filename}")
+                            retry_count = 0
+                            success = True
+                        except Exception as e:
+                            retry_count += 1
+                            if retry_count < 5:
+                                delay = random.uniform(3 * 60, 10 * 60)  # 随机延迟3到10分钟
+                                self.result.emit(
+                                    f"\n⚠获取学生 {row['姓名']} 微博 ID {weibo_id} 的帖子时出错: {str(e)}。将在 {delay / 60:.2f} 分钟后重试 (第 {retry_count} 次重试)。")
+                                time.sleep(delay)
+                            else:
+                                self.result.emit(
+                                    f"\n⚠获取学生 {row['姓名']} 微博 ID {weibo_id} 的帖子时出错: {str(e)}。已达到最大重试次数。")
 
                 qzone_id = row['qq空间']
                 if not pd.isna(qzone_id):
-                    try:
-                        messages = qzone.fetch_messages(qzone_id)
-                        qzone_filename = os.path.join(student_folder_path, "qzone.txt")
-                        qzone.save_posts_to_file(messages, qzone_filename)
-                        self.result.emit(f"\n已保存学生 {row['姓名']} 的QQ(ID: {qzone_id}) 的帖子到 {qzone_filename}")
-                    except Exception as e:
-                        self.result.emit(f"\n⚠获取学生 {row['姓名']}  QQ(ID: {qzone_id}) 的帖子时出错: {str(e)}")
+                    retry_count = 0
+                    success = False
+                    while retry_count < 5 and not success:
+                        try:
+                            messages = qzone.fetch_messages(qzone_id)
+                            qzone_filename = os.path.join(student_folder_path, "qzone.txt")
+                            qzone.save_posts_to_file(messages, qzone_filename)
+                            self.result.emit(
+                                f"\n已保存学生 {row['姓名']} 的QQ(ID: {qzone_id}) 的帖子到 {qzone_filename}")
+                            retry_count = 0
+                            success = True
+                        except Exception as e:
+                            retry_count += 1
+                            if retry_count < 5:
+                                delay = random.uniform(3 * 60, 10 * 60)  # 随机延迟3到10分钟
+                                self.result.emit(
+                                    f"\n⚠获取学生 {row['姓名']} QQ ID {qzone_id} 的帖子时出错: {str(e)}。将在 {delay / 60:.2f} 分钟后重试 (第 {retry_count} 次重试)。")
+                                time.sleep(delay)
+                            else:
+                                self.result.emit(
+                                    f"\n⚠获取学生 {row['姓名']} QQ ID {qzone_id} 的帖子时出错: {str(e)}。已达到最大重试次数。")
 
             self.result.emit(f"\n{file_path} 的所有帖子已保存到 {class_folder_path}")
         except Exception as e:

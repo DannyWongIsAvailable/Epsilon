@@ -1,7 +1,9 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, QTextEdit, QMessageBox, QProgressBar
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QFileDialog, QVBoxLayout, QHBoxLayout, QWidget, \
+    QTextEdit, QMessageBox, QProgressBar
 from scr.task import Worker
 from datetime import datetime
+
 
 # 定义主窗口类
 class MainWindow(QMainWindow):
@@ -15,6 +17,10 @@ class MainWindow(QMainWindow):
         self.upload_button = QPushButton("上传文件夹")
         self.upload_button.setFixedSize(150, 40)
         self.upload_button.clicked.connect(self.upload_folder)
+        # 选择保存位置按钮
+        self.save_button = QPushButton("选择保存位置")
+        self.save_button.setFixedSize(150, 40)
+        self.save_button.clicked.connect(self.select_save_folder)
         # 获取数据按钮
         self.get_data_button = QPushButton("获取数据")
         self.get_data_button.setFixedSize(150, 40)
@@ -23,6 +29,7 @@ class MainWindow(QMainWindow):
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         button_layout.addWidget(self.upload_button)
+        button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.get_data_button)
         button_layout.addStretch()
         self.layout.addLayout(button_layout)
@@ -43,6 +50,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(container)
 
         self.folder_path = None
+        self.save_folder_path = None
         self.worker = None
         self.start_time = None  # 新增用于记录开始时间
 
@@ -52,6 +60,13 @@ class MainWindow(QMainWindow):
         self.folder_path = file_dialog.getExistingDirectory(self, "选择文件夹", "")
         if self.folder_path:
             self.result_text.append(f"选择的文件夹: {self.folder_path}")
+
+    # 选择保存位置的函数
+    def select_save_folder(self):
+        file_dialog = QFileDialog()
+        self.save_folder_path = file_dialog.getExistingDirectory(self, "选择保存位置", "")
+        if self.save_folder_path:
+            self.result_text.append(f"选择的保存位置: {self.save_folder_path}")
 
     # 获取数据和停止获取数据的切换函数
     def toggle_get_data(self):
@@ -66,10 +81,14 @@ class MainWindow(QMainWindow):
             self.show_error_message("请先选择文件夹")
             return
 
+        if not self.save_folder_path:
+            self.show_error_message("请先选择保存位置")
+            return
+
         self.progress_bar.setVisible(True)  # 开始处理前显示进度条
         self.get_data_button.setText("停止")  # 按钮文本变为“停止”
 
-        self.worker = Worker(self.folder_path)
+        self.worker = Worker(self.folder_path, self.save_folder_path)
         self.worker.progress.connect(self.update_progress)
         self.worker.result.connect(self.update_result_text)
         self.worker.finished.connect(self.process_finished)
@@ -115,6 +134,7 @@ class MainWindow(QMainWindow):
         error_dialog.setWindowTitle("错误")
         error_dialog.setText(message)
         error_dialog.exec()
+
 
 # 主程序入口
 if __name__ == "__main__":
