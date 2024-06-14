@@ -61,9 +61,9 @@ class Worker(QThread):
             class_name = header_dict['班级']
 
             self.result.emit(f"正在处理文件: {file_path}")
-            self.result.emit("头信息:\n")
+            self.result.emit("\n头信息:")
             self.result.emit(str(header_dict))
-            self.result.emit("\n数据:\n")
+            self.result.emit("数据:")
             self.result.emit(str(data))
 
             weibo = WeiboScraper()
@@ -83,26 +83,26 @@ class Worker(QThread):
 
                 weibo_id = row['微博']
                 if not pd.isna(weibo_id):
-                    self.retry_fetch_and_save(weibo, weibo_id, student_folder_path, row['姓名'], "weibo.txt")
+                    self.retry_fetch_and_save(weibo, "微博", weibo_id, student_folder_path, row['姓名'], "weibo.txt")
 
                 qzone_id = row['qq空间']
                 if not pd.isna(qzone_id):
-                    self.retry_fetch_and_save(qzone, qzone_id, student_folder_path, row['姓名'], "qzone.txt")
+                    self.retry_fetch_and_save(qzone,'qq空间', qzone_id, student_folder_path, row['姓名'], "qzone.txt")
 
             self.result.emit(f"\n{file_path} 的所有帖子已保存到 {class_folder_path}")
         except Exception as e:
             self.result.emit(f"Error processing file {file_path}: {str(e)}")
 
-    def retry_fetch_and_save(self, scraper, id, folder_path, student_name, filename):
+    def retry_fetch_and_save(self, scraper, platform, id, folder_path, student_name, filename):
         retry_count = 0
         success = False
         max_retries = 5
         while retry_count < max_retries and not success:
             try:
-                posts = scraper.fetch_posts(id)
+                posts = scraper.fetch_messages(id)
                 save_path = os.path.join(folder_path, filename)
                 scraper.save_posts_to_file(posts, save_path)
-                self.result.emit(f"\n已保存学生 {student_name} 的数据 (ID: {id}) 到 {save_path}")
+                self.result.emit(f"\n已保存学生 {student_name}(ID: {id}) 的{platform}动态 到 {save_path}")
                 success = True
             except Exception as e:
                 retry_count += 1

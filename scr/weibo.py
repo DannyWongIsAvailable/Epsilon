@@ -14,7 +14,7 @@ class WeiboScraper:
         self.headers = config.get('weibo_headers', {})
         self.pages = config.get('weibo_pages', 1)  # Default to 1 if not set in config
 
-    def fetch_posts(self, uid):
+    def fetch_messages(self, uid):
         results = []
 
         for page in range(1, self.pages + 1):
@@ -42,6 +42,8 @@ class WeiboScraper:
         return results
 
     def save_posts_to_file(self, posts, filename='weibo_posts.txt'):
+        if not posts:
+            return  # 如果messages为空，则不保存
         with open(filename, 'w', encoding='utf-8') as f:
             for post in posts:
                 f.write(f"╔═════════{post['time']}════════╗\n")
@@ -51,9 +53,9 @@ class WeiboScraper:
 
 if __name__ == '__main__':
     try:
-        scraper = WeiboScraper()
+        scraper = WeiboScraper('../config.yaml')
         user_id = '2413690840'
-        posts = scraper.fetch_posts(user_id)
+        posts = scraper.fetch_messages(user_id)
         scraper.save_posts_to_file(posts, 'weibo_posts.txt')
     except Exception as e:
         logging.error(f"An error occurred: {e}")
