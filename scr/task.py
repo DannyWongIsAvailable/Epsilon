@@ -109,7 +109,7 @@ class Worker(QThread):
                 if retry_count < max_retries:
                     delay = random.uniform(3 * 60, 10 * 60)  # 随机延迟3到10分钟
                     self.result.emit(
-                        f"\n⚠获取学生 {student_name} ID {id} 的数据时出错: {str(e)}。将在 {delay / 60:.2f} 分钟后重试 (第 {retry_count} 次重试)。")
+                        f"\n⚠获取学生 {student_name} ID {id} 的{platform}数据时出错: {str(e)}。将在 {delay / 60:.2f} 分钟后重试 (第 {retry_count} 次重试)。")
 
                     # 非阻塞等待
                     wait_until = datetime.now() + timedelta(seconds=delay)
@@ -118,4 +118,4 @@ class Worker(QThread):
                             return  # 如果在等待期间点击了“停止”，立即返回
                         time.sleep(1)  # 等待1秒后检查一次
                 else:
-                    self.result.emit(f"\n⚠获取学生 {student_name} ID {id} 的数据时出错: {str(e)}。已达到最大重试次数。")
+                    self.result.emit(f"\n⚠获取学生 {student_name} ID {id} 的{platform}数据时出错: {str(e)}。已达到最大重试次数。")
