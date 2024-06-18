@@ -93,12 +93,3 @@ class QQZoneScraper:
                 f.write(f"╔═════════{message['createTime']}════════╗\n")
                 f.write(message['content'] + "\n")
                 f.write("╚═══════════════════════════╝\n")
-
-if __name__ == "__main__":
-    try:
-        user_id = '374749536'
-        scraper = QQZoneScraper()
-        messages = scraper.fetch_messages(user_id)
-        scraper.save_posts_to_file(messages, 'qzone_posts.txt')
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")

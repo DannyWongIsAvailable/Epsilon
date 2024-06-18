@@ -50,12 +50,3 @@ class WeiboScraper:
                 f.write(post['text'] + "\n")
                 f.write("╚═════════════════════════════════════╝\n")
 
-
-if __name__ == '__main__':
-    try:
-        scraper = WeiboScraper('../config.yaml')
-        user_id = '2413690840'
-        posts = scraper.fetch_messages(user_id)
-        scraper.save_posts_to_file(posts, 'weibo_posts.txt')
-    except Exception as e:
-        logging.error(f"An error occurred: {e}")
