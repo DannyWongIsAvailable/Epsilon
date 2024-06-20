@@ -3,7 +3,7 @@
 # 用户不能修改键名，只需要修改参数值
 
 # 微博配置
-#==============================================================================
+#╔═════════════════════════════════════════════════════════════════════════════╗
 weibi_pages: 1  # 微博爬取页数
 weibo_headers:
   authority: 'weibo.com'
@@ -28,12 +28,13 @@ weibo_headers:
 #  如果生成了文件夹没有文件，意味着网站的Cookie失效，需要重新获取。
 #  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件。
 #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
-#  一定要将Cookie的内容加上引号，否则会报错。
+#  一定要将Cookie的内容加上“英文引号”，否则会报错。
+#  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
   Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ULV=1718096186386:5:2:1:9410392538362.47.1718096186344:1717744075120; PC_TOKEN=15dccd850c; ALF=1720928097; SUB=_2A25Lb8oxDeRhGeNI7VAX-CrJyjiIHXVoBUP5rDV8PUJbkNB-LVP1kW1NSF2BWEc8SM2mMYfaKugD1n9hRjMZu3ti; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; XSRF-TOKEN=11eKLceeAIF1OJjHATbCxTrI; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCdYKMSeosgEqh8hWYi7flPu_bjOaFrWVEy5KgGDPjlFRxqXefQNKNJUxABK0lHEVkRjQ-ImUhG4agioxlSdqNeA=='
-#===============================================================================
+#╚═════════════════════════════════════════════════════════════════════════════╝
 
 # QQ空间配置
-#==============================================================================
+#╔═════════════════════════════════════════════════════════════════════════════╗
 qzone_pages: 1  # QQ空间爬取页数
 qzone_headers:
   User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
@@ -51,5 +52,6 @@ qzone_headers:
   #  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件。
   #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
   #  一定要将Cookie的内容加上引号，否则会报错。
+  #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
   cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; suid=ek168813540229055590; _qimei_fingerprint=6a78fe4f2c148e41e8b5a712f987686c; QZ_FE_WEBP_SUPPORT=1; qz_screen=1920x1080; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; openid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; ptui_loginuin=437460307; p_uin=o0437460307; qqmusic_uin=0437460307; qqmusic_fromtag=6; pgv_info=ssid=s9122149112; _qpsvr_localtk=0.8793251748518933; rv2=80C1DBA9624279456B1142788D37CA07EEDAB8E98737424849; property20=DD1664166781761353E16F8871DCC9AB1DF6B1B98804537EACA76B2C4BAAC3C69EC3D7A940A8252C; uin=o0437460307; cpu_performance_v8=6; skey=@Cy3bShMAq; pt4_token=KgI*2*kpCmFG3gNSxip6xycM41a06B8-tubWu191XHo_; p_skey=9kjRMXSg060CRjeC4-D4eUMueKccW1uHD6wkpyy5QWw_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1718712586301; qqmusic_key=@Cy3bShMAq"
-#==============================================================================
+#╚═════════════════════════════════════════════════════════════════════════════╝

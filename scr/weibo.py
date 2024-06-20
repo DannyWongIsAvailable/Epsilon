@@ -41,7 +41,7 @@ class WeiboScraper:
 
         return results
 
-    def save_posts_to_file(self, posts, filename='weibo_posts.txt'):
+    def save_posts_to_file(self, posts, filename):
         if not posts:
             return  # 如果messages为空，则不保存
         with open(filename, 'w', encoding='utf-8') as f:
