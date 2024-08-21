@@ -7,6 +7,10 @@ import logging
 # 设置日志记录，只输出到控制台，不保存到文件
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+class TooManyRequestsError(Exception):
+    """自定义异常，用于表示请求过多导致的错误"""
+    pass
+
 class QQZoneScraper:
     def __init__(self):
         self.session = requests.Session()
@@ -63,14 +67,18 @@ class QQZoneScraper:
                         json_data = match.group(1)
                         parsed_data = json.loads(json_data)
 
+                        if parsed_data.get('code') == -10000:
+                            raise TooManyRequestsError("使用人数过多，请稍后再试")
+
                         if parsed_data.get('msglist'):
                             for item in parsed_data['msglist']:
                                 text_html = item.get('content', '')
-                                createTime = item.get('createTime', '')
+                                create_time = item.get('createTime', '')
                                 text_clean = re.sub(r'<.*?>', '', text_html).replace('&nbsp;', ' ')
                                 all_messages.append({
-                                    'createTime': createTime,
-                                    'content': text_clean
+                                    '时间': create_time,
+                                    '内容': text_clean,
+                                    '平台': 'QQ空间'
                                 })
                         else:
                             return all_messages
@@ -79,17 +87,11 @@ class QQZoneScraper:
                 else:
                     logging.error(f"Request failed with status code: {response.status_code}")
                     raise ConnectionError(f"Request failed with status code: {response.status_code}")
+            except TooManyRequestsError as e:
+                logging.warning(str(e))
+                raise  # 重新抛出异常，以便在上层代码中处理
             except Exception as e:
                 logging.error(f"An error occurred: {e}")
                 raise
 
         return all_messages
-
-    def save_posts_to_file(self, messages, filename='qzone_posts.txt'):
-        if not messages:
-            return  # 如果messages为空，则不保存
-        with open(filename, 'w', encoding='utf-8') as f:
-            for message in messages:
-                f.write(f"╔═════════{message['createTime']}════════╗\n")
-                f.write(message['content'] + "\n")
-                f.write("╚═══════════════════════════╝\n")

@@ -31,8 +31,9 @@ class WeiboScraper:
                 if 'data' in data and 'list' in data['data']:
                     for item in data['data']['list']:
                         post = {
-                            'time': item.get('created_at', ''),
-                            'text': item.get('text_raw', '')
+                            '时间': item.get('created_at', ''),
+                            '内容': item.get('text_raw', ''),
+                            '平台': '微博'
                         }
                         results.append(post)
             except (HTTPError, ConnectionError, Timeout, RequestException) as e:
@@ -41,9 +42,7 @@ class WeiboScraper:
 
         return results
 
-    def save_posts_to_file(self, posts, filename):
-        if not posts:
-            return  # 如果messages为空，则不保存
+    def save_posts_to_file(self,  posts, filename):
         with open(filename, 'w', encoding='utf-8') as f:
             for post in posts:
                 f.write(f"╔═════════{post['time']}════════╗\n")

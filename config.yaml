@@ -1,6 +1,7 @@
 # 这里是用户配置文件，程序的参数从这里读取
 # 格式为键值对（key: value），key是参数名，value是参数值
 # 用户不能修改键名，只需要修改参数值
+# 注意字符缩进 ！！！
 
 # 微博配置
 #╔═════════════════════════════════════════════════════════════════════════════╗
@@ -30,7 +31,8 @@ weibo_headers:
 #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
 #  一定要将Cookie的内容加上“英文引号”，否则会报错。
 #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ULV=1718096186386:5:2:1:9410392538362.47.1718096186344:1717744075120; PC_TOKEN=15dccd850c; ALF=1720928097; SUB=_2A25Lb8oxDeRhGeNI7VAX-CrJyjiIHXVoBUP5rDV8PUJbkNB-LVP1kW1NSF2BWEc8SM2mMYfaKugD1n9hRjMZu3ti; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; XSRF-TOKEN=11eKLceeAIF1OJjHATbCxTrI; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCdYKMSeosgEqh8hWYi7flPu_bjOaFrWVEy5KgGDPjlFRxqXefQNKNJUxABK0lHEVkRjQ-ImUhG4agioxlSdqNeA=='
+  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ULV=1720504108173:6:1:1:6058975247784.928.1720504108170:1718096186386; ALF=1726325401; SUB=_2A25LumXJDeRhGeNI7VAX-CrJyjiIHXVotucBrDV8PUJbkNAbLVb3kW1NSF2BWFZ2H2ONxMbIaW41jQFDJPGgiyki; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KzhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; XSRF-TOKEN=nCdGqtB0evN3qGlovN8YgAvv; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCutWpZ3lt_nEMZgaNu68b0A8GiIvc1uvseZy1hWGEWAkXpU8wEN-LSwzzSe4XRscw_RPCQdnCj0YwD8pgTHDxiA=='
+
 #╚═════════════════════════════════════════════════════════════════════════════╝
 
 # QQ空间配置
@@ -53,5 +55,6 @@ qzone_headers:
   #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
   #  一定要将Cookie的内容加上引号，否则会报错。
   #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; suid=ek168813540229055590; _qimei_fingerprint=6a78fe4f2c148e41e8b5a712f987686c; QZ_FE_WEBP_SUPPORT=1; qz_screen=1920x1080; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; openid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; ptui_loginuin=437460307; p_uin=o0437460307; qqmusic_uin=0437460307; qqmusic_fromtag=6; pgv_info=ssid=s9122149112; _qpsvr_localtk=0.8793251748518933; rv2=80C1DBA9624279456B1142788D37CA07EEDAB8E98737424849; property20=DD1664166781761353E16F8871DCC9AB1DF6B1B98804537EACA76B2C4BAAC3C69EC3D7A940A8252C; uin=o0437460307; cpu_performance_v8=6; skey=@Cy3bShMAq; pt4_token=KgI*2*kpCmFG3gNSxip6xycM41a06B8-tubWu191XHo_; p_skey=9kjRMXSg060CRjeC4-D4eUMueKccW1uHD6wkpyy5QWw_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1718712586301; qqmusic_key=@Cy3bShMAq"
+  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; openid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b; suid=user_0_a90341a78e064; qz_screen=1920x1080; uin=o0437460307; skey=@BBI0y5n7d; p_uin=o0437460307; qqmusic_uin=0437460307; qqmusic_key=@BBI0y5n7d; qqmusic_fromtag=6; pgv_info=ssid=s2438334946; pt4_token=QqGZYaMtyXZKmMBPqP7OD3wCQnKqjfoQu*Kb*-ycv-0_; p_skey=bwkihnYZgIUQ*tCrwCEm*ZnbSwYbjUUxPpD3ZvcWFBg_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1724208951935; welcomeflash=549236781_1; rv2=800AC29663D8A5D21F67127C14C1CCB88E64CE9878C9581542; property20=2745BFFEBF4E3B03051689E3C93B75041F9625F94739F67FD9BC7970010673CD66DAA58185DBAB84; cpu_performance_v8=45"
+
 #╚═════════════════════════════════════════════════════════════════════════════╝
