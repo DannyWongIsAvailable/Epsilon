@@ -9,6 +9,7 @@ from scr.read_data import ExcelProcessor
 from scr.weibo import WeiboScraper
 from scr.qzone import QQZoneScraper, TooManyRequestsError
 
+
 class Worker(QThread):
     progress = pyqtSignal(int)
     result = pyqtSignal(str)
@@ -141,7 +142,10 @@ class Worker(QThread):
                     break  # 跳过，不重试
                 retry_count += 1
                 if retry_count < max_retries:
-                    delay = random.uniform(3 * 60, 5 * 60)  # 随机延迟3到5分钟
+                    if platform == '微博':
+                        delay = random.uniform(3 * 60, 5 * 60)  # 微博随机延迟3到5分钟
+                    else:
+                        delay = random.uniform(10 * 60, 15 * 60)  # QQ空间随机延迟10到15分钟
                     self.result.emit(
                         f"\n⚠获取学生 {student_name} ID {id} 的{platform}数据时出错: {str(e)}。将在 {delay / 60:.2f} 分钟后重试 (第 {retry_count} 次重试)。")
 
@@ -165,12 +169,35 @@ class Worker(QThread):
         })
 
     def retry_failed_ids(self):
-        self.result.emit("\n正在重新处理由于使用人数过多而失败的任务...")
+        if not any(self.retry_later.values()):
+            self.result.emit("\n没有需要重试的任务，跳过重试步骤。")
+            return
+
+        self.result.emit("\n等待15分钟后开始重新处理由于使用人数过多而失败的任务...")
+
+        # 等待15分钟
+        time.sleep(15 * 60)
+
+        retry_results = {}  # 用于存储重试成功的结果
+
         for platform, tasks in self.retry_later.items():
             for task in tasks:
                 self.result.emit(f"\n重新处理: {task['student_name']} (ID: {task['id']}) 的{platform}动态")
                 scraper = WeiboScraper() if platform == "微博" else QQZoneScraper()
                 posts = self.retry_fetch_and_save(scraper, platform, task['id'], task['student_name'])
-                # 将重新获取的动态数据加入对应的学生记录中
-                # 请确保你有一个全局或类级别的变量来存储这些动态，以便在处理时可以访问和更新它们
+
+                if posts:  # 如果重试成功获取到动态
+                    if task['student_name'] not in retry_results:
+                        retry_results[task['student_name']] = []
+                    retry_results[task['student_name']].extend(posts)
+
+        # 将重试成功的结果保存到一个单独的文件中
+        if retry_results:
+            retry_results_filename = os.path.join(self.save_folder_path, "retry_results.json")
+            with open(retry_results_filename, 'w', encoding='utf-8') as f:
+                json.dump(retry_results, f, ensure_ascii=False, indent=4)
+            self.result.emit(f"\n重试成功的任务结果已保存到 {retry_results_filename}")
+        else:
+            self.result.emit("\n重试后没有成功获取到任何任务的动态。")
+
         self.result.emit("\n所有失败的任务已重新处理。")
