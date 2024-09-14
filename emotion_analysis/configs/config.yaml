@@ -1,0 +1,26 @@
+# 数据相关配置
+data:
+  train_path: "../data/train.csv"
+  val_path: "../data/val.csv"
+  test_path: "../data/test.csv"
+  max_seq_length: 256  # 句子最大长度
+
+# 模型相关配置
+model:
+  pretrained_model_name: "bert-base-chinese"  # BERT预训练模型
+  dropout: 0.3
+  freeze_layers: 3  # 冻结网络，除了freeze_layers层其他全部冻结
+
+# 训练相关配置
+training:
+  batch_size: 32
+  learning_rate: 0.00002  # 默认的 BERT 微调学习率，可根据数据集大小调整
+  num_epochs: 10  # 大约每增加 5 个 epoch 耗时增加2小时
+  warmup_steps: 1  # 预热步数占总步数的 5-10%
+  weight_decay: 0.01  # 可保持为 0.01，也可以根据验证集表现微调
+
+
+
+# 评估相关配置
+evaluation:
+  eval_batch_size: 32
