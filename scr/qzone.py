@@ -3,13 +3,17 @@ import re
 import json
 import yaml
 import logging
+from scr.emotional_prediction import ModelInference  # 导入你实现的情感分析模型类
+from datetime import datetime, timedelta
 
 # 设置日志记录，只输出到控制台，不保存到文件
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 class TooManyRequestsError(Exception):
     """自定义异常，用于表示请求过多导致的错误"""
     pass
+
 
 class QQZoneScraper:
     def __init__(self):
@@ -19,6 +23,9 @@ class QQZoneScraper:
         self.headers['cookie'] = config['qzone_headers']['cookie']
         self.g_tk = self.gen_gtk(self.headers['cookie'])
         self.pages = config['qzone_pages']
+
+        # 初始化情感分析模型
+        self.model_inference = ModelInference()  # 实例化情感分析模型
 
     @staticmethod
     def load_config():
@@ -37,6 +44,31 @@ class QQZoneScraper:
         for i in p_skey_value:
             t += (t << 5) + ord(i)
         return t & 2147483647
+
+    def parse_create_time(self, create_time_str):
+        """解析自定义日期格式，例如'昨天', '前天', '10:37'等"""
+        now = datetime.now()
+
+        # 处理 "昨天" 和 "前天"
+        if "昨天" in create_time_str:
+            time_str = create_time_str.replace("昨天", "").strip()
+            return None, f"{(now - timedelta(days=1)).strftime('%Y年%m月%d日')} {time_str}"
+
+        elif "前天" in create_time_str:
+            time_str = create_time_str.replace("前天", "").strip()
+            return None, f"{(now - timedelta(days=2)).strftime('%Y年%m月%d日')} {time_str}"
+
+        # 处理 "00:00" 这种格式，补充当天的日期
+        elif re.match(r'^\d{2}:\d{2}$', create_time_str):
+            return None, f"{now.strftime('%Y年%m月%d日')} {create_time_str}"
+
+        # 处理标准格式 "2024年09月14日"
+        else:
+            try:
+                create_time_obj = datetime.strptime(create_time_str, '%Y年%m月%d日')
+                return create_time_obj, create_time_str  # 返回解析后的时间对象和原始字符串
+            except ValueError:
+                return None, create_time_str  # 无法解析时返回原始字符串
 
     def fetch_messages(self, user_id, messages_per_page=20):
         base_url = 'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6'
@@ -70,15 +102,32 @@ class QQZoneScraper:
                         if parsed_data.get('code') == -10000:
                             raise TooManyRequestsError("使用人数过多，请稍后再试")
 
+                        # 在解析msglist的时候
                         if parsed_data.get('msglist'):
                             for item in parsed_data['msglist']:
                                 text_html = item.get('content', '')
                                 create_time = item.get('createTime', '')
                                 text_clean = re.sub(r'<.*?>', '', text_html).replace('&nbsp;', ' ')
+
+                                # 解析日期格式，返回解析后的对象和原始字符串
+                                create_time_obj, create_time_str = self.parse_create_time(create_time)
+
+                                # 如果返回了时间对象，则判断是否超过2天
+                                if create_time_obj:
+                                    current_time = datetime.now()
+                                    if (current_time - create_time_obj).days > 2:
+                                        continue
+
+                                # 调用情感分析模型，获取预测结果
+                                predicted_label, predicted_score = self.model_inference.predict(text_clean)
+
+                                # 将消息、情感分析结果添加到 all_messages
                                 all_messages.append({
-                                    '时间': create_time,
+                                    '时间': create_time_str,  # 无论是否解析成功，都使用原始字符串
                                     '内容': text_clean,
-                                    '平台': 'QQ空间'
+                                    '平台': 'QQ空间',
+                                    '情感类别': predicted_label,  # 添加情感类别
+                                    '情感得分': predicted_score  # 添加情感得分
                                 })
                         else:
                             return all_messages

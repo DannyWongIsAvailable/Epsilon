@@ -22,6 +22,8 @@ class Worker(QThread):
         self.save_folder_path = save_folder_path
         self._is_running = True
         self.retry_later = {}  # 用于存储需要稍后重试的ID
+        self.weibo = WeiboScraper()
+        self.qzone = QQZoneScraper()
 
     def run(self):
         try:
@@ -71,8 +73,7 @@ class Worker(QThread):
             self.result.emit("数据:")
             self.result.emit(str(data))
 
-            weibo = WeiboScraper()
-            qzone = QQZoneScraper()
+
 
             # 创建文件夹路径
             school_folder_path = os.path.join(root_folder_path, f"School_{school_id}")
@@ -99,13 +100,13 @@ class Worker(QThread):
                 weibo_id = row['微博']
                 if not pd.isna(weibo_id):
                     weibo_id = str(weibo_id)  # 确保转换为字符串
-                    weibo_posts = self.retry_fetch_and_save(weibo, "微博", weibo_id, student_name)
+                    weibo_posts = self.retry_fetch_and_save(self.weibo, "微博", weibo_id, student_name)
                     class_info["学生动态"][student_name].extend(weibo_posts)
 
                 qzone_id = row['qq空间']
                 if not pd.isna(qzone_id):
                     qzone_id = str(qzone_id)  # 确保转换为字符串
-                    qzone_posts = self.retry_fetch_and_save(qzone, 'qq空间', qzone_id, student_name)
+                    qzone_posts = self.retry_fetch_and_save(self.qzone, 'qq空间', qzone_id, student_name)
                     class_info["学生动态"][student_name].extend(qzone_posts)
 
             # 保存班级信息到JSON文件
@@ -124,8 +125,8 @@ class Worker(QThread):
         posts = []
         while retry_count < max_retries and not success:
             try:
-                sleep_time = round(random.uniform(1, 2), 2)
-                time.sleep(sleep_time)
+                # sleep_time = round(random.uniform(1, 2), 2)
+                # time.sleep(sleep_time)
                 # 随机休息1-2秒再爬
                 posts = scraper.fetch_messages(id)
                 if not posts:

@@ -31,13 +31,13 @@ weibo_headers:
 #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
 #  一定要将Cookie的内容加上“英文引号”，否则会报错。
 #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ULV=1720504108173:6:1:1:6058975247784.928.1720504108170:1718096186386; ALF=1726325401; SUB=_2A25LumXJDeRhGeNI7VAX-CrJyjiIHXVotucBrDV8PUJbkNAbLVb3kW1NSF2BWFZ2H2ONxMbIaW41jQFDJPGgiyki; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KzhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; XSRF-TOKEN=nCdGqtB0evN3qGlovN8YgAvv; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCutWpZ3lt_nEMZgaNu68b0A8GiIvc1uvseZy1hWGEWAkXpU8wEN-LSwzzSe4XRscw_RPCQdnCj0YwD8pgTHDxiA=='
+  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ULV=1720504108173:6:1:1:6058975247784.928.1720504108170:1718096186386; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; XSRF-TOKEN=YalqTH2H1b06dvFIJGcsy3tv; ALF=1728880529; SUB=_2A25L4WLBDeRhGeNI7VAX-CrJyjiIHXVon_oJrDV8PUJbkNANLWHBkW1NSF2BWHRjHI4TayKMn0aGVtva6rOhlPMh; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCutWpZ3lt_nEMZgaNu68b0Kx7g0rHSe8RrqFZsFirk1BTViCM22rfaS42OojlycDE6e4X0s0uWv29JwZGrOB6PA=='
 
 #╚═════════════════════════════════════════════════════════════════════════════╝
 
 # QQ空间配置
 #╔═════════════════════════════════════════════════════════════════════════════╗
-qzone_pages: 1  # QQ空间爬取页数
+qzone_pages: 5  # QQ空间爬取页数
 qzone_headers:
   User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
   authority: "user.qzone.qq.com"
@@ -55,6 +55,6 @@ qzone_headers:
   #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
   #  一定要将Cookie的内容加上引号，否则会报错。
   #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; openid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b; suid=user_0_a90341a78e064; qz_screen=1920x1080; qqmusic_uin=0437460307; qqmusic_fromtag=6; pgv_info=ssid=s2438334946; zzpaneluin=; zzpanelkey=; _qpsvr_localtk=0.2502110455776798; uin=o0437460307; p_uin=o0437460307; skey=@OpafclgzX; pt4_token=aVfjQJ3bz-Ajcya6BJH4SkXZGAAIytjYvbyVu-bpL84_; p_skey=gD*fuvROPj6aGPjhOdWjcmpcrhoABOTy5ZCaZz57rdc_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1724305822514; qqmusic_key=@OpafclgzX; rv2=80A42A9E7D316469EA766E80C52A59B950295BEB7AD200139D; property20=E2F7AEE7B79336037C98F69045BC1E038E96E8E7AC7582C7B545424789A71B7E69A80BBF0EA2FFB4; cpu_performance_v8=53"
+  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b; suid=user_0_a90341a78e064; qz_screen=1920x1080; uin=o0437460307; skey=@qJUvWGt1w; p_uin=o0437460307; pt4_token=D4-aCkz4WpFP4YCCVBOV5EEQ*2gQ3TAT92qO4xPxHAE_; p_skey=GM1xA*dpRZdMnDJ*58zc8xzrKfT3CbIxZshktMqxTfQ_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1726288585122; qqmusic_uin=0437460307; qqmusic_key=@qJUvWGt1w; qqmusic_fromtag=6; pgv_info=ssid=s9877585240; cpu_performance_v8=4; rv2=80442AF7E1DCF742958EC0468331C930AD6AFE1A84C30E5CA0; property20=AFB2AAD8025482533DC319EBF1396A0A3C51860F04DB59F6A6155F74E7F3A8354D33A93084B1D119"
 
 #╚═════════════════════════════════════════════════════════════════════════════╝
