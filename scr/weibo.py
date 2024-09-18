@@ -16,13 +16,15 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class WeiboScraper:
-    def __init__(self, config_file='../config.yaml'):
+    def __init__(self, config_file='./config.yaml'):
         with open(config_file, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
         self.url = 'https://weibo.com/ajax/statuses/mymblog'
         self.headers = config.get('weibo_headers', {})
         self.pages = config.get('weibo_pages', 1)  # Default to 1 if not set in config
         self.fetch_days = config.get('weibo_fetch_days', 2)  # 从配置文件读取抓取天数，默认为2天
+        print("weibo pages: ", self.pages)
+        print("weibo fetch days: ", self.fetch_days)
 
         # 初始化情感分析模型
         self.model_inference = ModelInference()  # 实例化情感分析模型
@@ -67,7 +69,7 @@ class WeiboScraper:
                             '时间': create_time_str,  # 保留原始字符串表示
                             '内容': text_raw,
                             '平台': '微博',
-                            '情感类别': predicted_label,  # 添加情感类别
+                            '情感分析': predicted_label,  # 添加情感类别
                             '情感得分': predicted_score  # 添加情感得分
                         }
                         results.append(post)
