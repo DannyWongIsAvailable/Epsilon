@@ -23,13 +23,14 @@ class QQZoneScraper:
         self.headers['cookie'] = config['qzone_headers']['cookie']
         self.g_tk = self.gen_gtk(self.headers['cookie'])
         self.pages = config['qzone_pages']
+        self.fetch_days = config['qzone_fetch_days']
 
         # 初始化情感分析模型
         self.model_inference = ModelInference()  # 实例化情感分析模型
 
     @staticmethod
     def load_config():
-        with open("./config.yaml", 'r', encoding='utf-8') as ymlfile:
+        with open("../config.yaml", 'r', encoding='utf-8') as ymlfile:
             return yaml.safe_load(ymlfile)
 
     def gen_gtk(self, cookie):
@@ -115,7 +116,7 @@ class QQZoneScraper:
                                 # 如果返回了时间对象，则判断是否超过2天
                                 if create_time_obj:
                                     current_time = datetime.now()
-                                    if (current_time - create_time_obj).days > 2:
+                                    if (current_time - create_time_obj).days > self.fetch_days:
                                         continue
 
                                 # 调用情感分析模型，获取预测结果

@@ -16,12 +16,13 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class WeiboScraper:
-    def __init__(self, config_file='./config.yaml'):
+    def __init__(self, config_file='../config.yaml'):
         with open(config_file, 'r', encoding='utf-8') as f:
             config = yaml.safe_load(f)
         self.url = 'https://weibo.com/ajax/statuses/mymblog'
         self.headers = config.get('weibo_headers', {})
         self.pages = config.get('weibo_pages', 1)  # Default to 1 if not set in config
+        self.fetch_days = config.get('weibo_fetch_days', 2)  # 从配置文件读取抓取天数，默认为2天
 
         # 初始化情感分析模型
         self.model_inference = ModelInference()  # 实例化情感分析模型
@@ -54,8 +55,8 @@ class WeiboScraper:
 
                         # 获取当前时间并计算日期差异
                         current_time = datetime.now(create_time.tzinfo)  # 使用相同的时区信息
-                        if (current_time - create_time).days > 2:
-                            # logging.info(f"消息时间 {create_time_str} 超过2天，不保存该消息")
+                        if (current_time - create_time).days > self.fetch_days:
+                            # logging.info(f"消息时间 {create_time_str} 超过设定天数 {self.fetch_days}，不保存该消息")
                             continue
 
                         # 调用情感分析模型，获取预测结果
@@ -75,7 +76,6 @@ class WeiboScraper:
                 raise
 
         return results
-
 
 # 使用示例
 if __name__ == '__main__':

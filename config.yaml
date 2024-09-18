@@ -6,6 +6,7 @@
 # 微博配置
 #╔═════════════════════════════════════════════════════════════════════════════╗
 weibi_pages: 1  # 微博爬取页数
+weibo_fetch_days: 2  # 抓取天数
 weibo_headers:
   authority: 'weibo.com'
   method: 'GET'
@@ -38,6 +39,7 @@ weibo_headers:
 # QQ空间配置
 #╔═════════════════════════════════════════════════════════════════════════════╗
 qzone_pages: 5  # QQ空间爬取页数
+qzone_fetch_days: 30  # 抓取天数
 qzone_headers:
   User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
   authority: "user.qzone.qq.com"
