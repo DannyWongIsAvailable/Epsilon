@@ -24,6 +24,7 @@ class Worker(QThread):
         self.retry_later = {}  # 用于存储需要稍后重试的ID
         self.weibo = WeiboScraper()
         self.qzone = QQZoneScraper()
+        self.select_dict = []  # 筛选字典列表
 
     def run(self):
         try:
@@ -47,6 +48,15 @@ class Worker(QThread):
 
             # 重新处理之前失败的ID
             self.retry_failed_ids()
+
+            # 保存所有学校的筛选数据到一个Excel文件
+            if self.select_dict:
+                summary_filename = os.path.join(root_folder_path, "筛选数据汇总.xlsx")
+                summary_df = pd.DataFrame(self.select_dict)
+                summary_df.to_excel(summary_filename, index=False)
+                self.result.emit(f"\n已保存所有学校的筛选汇总数据到 {summary_filename}")
+            else:
+                self.result.emit("\n没有需要保存的筛选数据")
 
             self.finished.emit()
         except Exception as e:
@@ -73,8 +83,6 @@ class Worker(QThread):
             self.result.emit("数据:")
             self.result.emit(str(data))
 
-
-
             # 创建文件夹路径
             school_folder_path = os.path.join(root_folder_path, f"School_{school_id}")
             grade_folder_path = os.path.join(school_folder_path, f"Grade_{grade}")
@@ -93,20 +101,21 @@ class Worker(QThread):
             for index, row in data.iterrows():
                 if not self._is_running:
                     return
-                student_name = str(row['学号']) + str(row['姓名'])  # 确保转换为字符串
+                student_id = str(row['学号'])
+                student_name = str(row['姓名'])  # 确保转换为字符串
 
                 class_info["学生动态"][student_name] = []
 
                 weibo_id = row['微博']
                 if not pd.isna(weibo_id):
                     weibo_id = str(weibo_id)  # 确保转换为字符串
-                    weibo_posts = self.retry_fetch_and_save(self.weibo, "微博", weibo_id, student_name)
+                    weibo_posts = self.retry_fetch_and_save(self.weibo, "微博", class_info, weibo_id, student_id, student_name)
                     class_info["学生动态"][student_name].extend(weibo_posts)
 
                 qzone_id = row['qq空间']
                 if not pd.isna(qzone_id):
                     qzone_id = str(qzone_id)  # 确保转换为字符串
-                    qzone_posts = self.retry_fetch_and_save(self.qzone, 'qq空间', qzone_id, student_name)
+                    qzone_posts = self.retry_fetch_and_save(self.qzone, 'qq空间', class_info, qzone_id, student_id, student_name)
                     class_info["学生动态"][student_name].extend(qzone_posts)
 
             # 保存班级信息到JSON文件
@@ -118,7 +127,7 @@ class Worker(QThread):
         except Exception as e:
             self.result.emit(f"Error processing file {file_path}: {str(e)}")
 
-    def retry_fetch_and_save(self, scraper, platform, id, student_name):
+    def retry_fetch_and_save(self, scraper, platform, class_info, id, student_id, student_name):
         retry_count = 0
         success = False
         max_retries = 5
@@ -133,6 +142,20 @@ class Worker(QThread):
                     raise ValueError("No messages to save.")
                 self.result.emit(f"\n已保存学生 {student_name}(ID: {id}) 的{platform}动态")
                 success = True
+                # 判断情感得分是否为 "0", "10", "20"
+                if posts:
+                    for post in posts:
+                        if "情感得分" in post and post["情感得分"] in ["0", "10", "20", "30"]:
+                            summary_entry = {
+                                "学校编号": class_info["班级信息"]["学校编号"],
+                                "年级": class_info["班级信息"]["年级"],
+                                "班级": class_info["班级信息"]["班级"],
+                                "学号": student_id,
+                                "姓名": student_name,
+                                **post  # 包含post里的所有键
+                            }
+                            self.select_dict.append(summary_entry)  # 添加到全局的筛选列表
+
             except TooManyRequestsError as e:
                 self.result.emit(f"\n⚠获取学生 {student_name} ID {id} 的{platform}数据时出错: {str(e)}。将稍后重试。")
                 self.add_to_retry_later(platform, id, student_name)
@@ -144,7 +167,7 @@ class Worker(QThread):
                 retry_count += 1
                 if retry_count < max_retries:
                     if platform == '微博':
-                        delay = random.uniform(3 * 60, 5 * 60)  # 微博随机延迟3到5分钟
+                        delay = random.uniform(1 * 60, 3 * 60)  # 微博随机延迟3到5分钟
                     else:
                         delay = random.uniform(10 * 60, 15 * 60)  # QQ空间随机延迟10到15分钟
                     self.result.emit(

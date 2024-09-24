@@ -49,29 +49,33 @@ class QQZoneScraper:
         return t & 2147483647
 
     def parse_create_time(self, create_time_str):
-        """解析自定义日期格式，例如'昨天', '前天', '10:37'等"""
         now = datetime.now()
 
-        # 处理 "昨天" 和 "前天"
         if "昨天" in create_time_str:
             time_str = create_time_str.replace("昨天", "").strip()
-            return None, f"{(now - timedelta(days=1)).strftime('%Y年%m月%d日')} {time_str}"
-
+            create_time_obj = datetime.strptime(f"{(now - timedelta(days=1)).strftime('%Y年%m月%d日')} {time_str}",
+                                                '%Y年%m月%d日 %H:%M')
+            create_time_str = create_time_obj.strftime('%Y年%m月%d日 %H:%M')  # 转换为日期+时间格式
         elif "前天" in create_time_str:
             time_str = create_time_str.replace("前天", "").strip()
-            return None, f"{(now - timedelta(days=2)).strftime('%Y年%m月%d日')} {time_str}"
-
-        # 处理 "00:00" 这种格式，补充当天的日期
-        elif re.match(r'^\d{2}:\d{2}$', create_time_str):
-            return None, f"{now.strftime('%Y年%m月%d日')} {create_time_str}"
-
-        # 处理标准格式 "2024年09月14日"
+            create_time_obj = datetime.strptime(f"{(now - timedelta(days=2)).strftime('%Y年%m月%d日')} {time_str}",
+                                                '%Y年%m月%d日 %H:%M')
+            create_time_str = create_time_obj.strftime('%Y年%m月%d日 %H:%M')  # 转换为日期+时间格式
+        elif re.match(r'^\d{2}:\d{2}$', create_time_str):  # 只有时间的情况
+            create_time_obj = datetime.strptime(f"{now.strftime('%Y年%m月%d日')} {create_time_str}",
+                                                '%Y年%m月%d日 %H:%M')
+            create_time_str = create_time_obj.strftime('%Y年%m月%d日 %H:%M')  # 转换为日期+时间格式
         else:
+            # 超过前天的情况，只有日期部分
             try:
-                create_time_obj = datetime.strptime(create_time_str, '%Y年%m月%d日')
-                return create_time_obj, create_time_str  # 返回解析后的时间对象和原始字符串
+                create_time_obj = datetime.strptime(create_time_str, '%Y年%m月%d日')  # 解析为日期对象
             except ValueError:
-                return None, create_time_str  # 无法解析时返回原始字符串
+                logging.warning(f"Failed to parse date: {create_time_str}")
+                return None, create_time_str  # 返回None用于跳过
+
+            return create_time_obj, create_time_str  # 保留原始日期字符串
+
+        return create_time_obj, create_time_str  # 返回日期对象和处理后的日期时间字符串
 
     def fetch_messages(self, user_id, messages_per_page=20):
         base_url = 'https://user.qzone.qq.com/proxy/domain/taotao.qq.com/cgi-bin/emotion_cgi_msglist_v6'
@@ -118,8 +122,13 @@ class QQZoneScraper:
                                 # 如果返回了时间对象，则判断是否超过2天
                                 if create_time_obj:
                                     current_time = datetime.now()
-                                    if (current_time - create_time_obj).days > self.fetch_days:
-                                        continue
+                                    delta_days = (current_time - create_time_obj).days
+                                    if delta_days > self.fetch_days:
+                                        continue  # 跳过超过指定天数的消息
+                                else:
+                                    # 如果仍然无法解析日期，可以选择跳过或记录日志
+                                    logging.warning(f"Failed to parse date: {create_time}")
+                                    continue
 
                                 # 调用情感分析模型，获取预测结果
                                 predicted_label, predicted_score = self.model_inference.predict(text_clean)
@@ -147,3 +156,8 @@ class QQZoneScraper:
                 raise
 
         return all_messages
+
+if __name__ == '__main__':
+    scraper = QQZoneScraper()
+    posts = scraper.fetch_messages('276578410')
+    print(posts)
