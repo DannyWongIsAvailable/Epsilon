@@ -3,11 +3,11 @@ data:
   train_path: "../data/train.csv"
   val_path: "../data/val.csv"
   test_path: "../data/test.csv"
-  max_seq_length: 256  # 句子最大长度
+  max_seq_length: 512  # 句子最大长度
 
 # 模型相关配置
 model:
-  pretrained_model_name: "bert-base-chinese"  # BERT预训练模型
+  pretrained_model_name: "./models/chinese_roberta_wwm_ext"  # BERT预训练模型
   dropout: 0.3
   freeze_layers: 3  # 冻结网络，除了freeze_layers层其他全部冻结
 

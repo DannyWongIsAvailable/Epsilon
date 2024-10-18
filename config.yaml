@@ -1,62 +1,54 @@
-# 这里是用户配置文件，程序的参数从这里读取
-# 格式为键值对（key: value），key是参数名，value是参数值
-# 用户不能修改键名，只需要修改参数值
-# 注意字符缩进 ！！！
-
-# 微博配置
-#╔═════════════════════════════════════════════════════════════════════════════╗
-weibi_pages: 1  # 微博爬取页数
-weibo_fetch_days: 2  # 抓取天数
-weibo_headers:
-  authority: 'weibo.com'
-  method: 'GET'
-  scheme: 'https'
-  Accept: 'application/json, text/plain, */*'
-  Accept-Encoding: 'gzip, deflate, br, zstd'
-  Accept-Language: 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7'
-  Client-Version: 'v2.45.38'
-  Dnt: '1'
-  Priority: 'u=1, i'
-  Sec-Ch-Ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
-  Sec-Ch-Ua-Mobile: '?0'
-  Sec-Ch-Ua-Platform: '"Windows"'
-  Sec-Fetch-Dest: 'empty'
-  Sec-Fetch-Mode: 'cors'
-  Sec-Fetch-Site: 'same-origin'
-  Server-Version: 'v2024.06.05.2'
-  User-Agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0'
-  X-Requested-With: 'XMLHttpRequest'
-  X-Xsrf-Token: 'tMd3QBGKsmXjM94AtxgtFatg'
-#  如果生成了文件夹没有文件，意味着网站的Cookie失效，需要重新获取。
-#  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件。
-#  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
-#  一定要将Cookie的内容加上“英文引号”，否则会报错。
-#  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  Cookie: 'UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; ALF=1729665787; SUB=_2A25L9X2rDeRhGeNI7VAX-CrJyjiIHXVoi_9jrDV8PUJbkNB-LVWnkW1NSF2BWBIa5wbxUDf5zaOXGZRXQtzYFGkx; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt; ULV=1727073808165:7:1:1:8426195069738.507.1727073808159:1720504108173; PC_TOKEN=7fbb8d45c6; XSRF-TOKEN=rH8NxWUS_O8Q30fDV1S0lFCz; WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCutWpZ3lt_nEMZgaNu68b0DcvnGKuD3c876eJ6zk0GHn1jK6LPyt-TIPJ1sIZaz3aZgtyNkDFb3Z3f9h50-r-ZA=='
-
-#╚═════════════════════════════════════════════════════════════════════════════╝
-
-# QQ空间配置
-#╔═════════════════════════════════════════════════════════════════════════════╗
-qzone_pages: 1  # QQ空间爬取页数
-qzone_fetch_days: 30  # 抓取天数
+qzone_fetch_days: 30
 qzone_headers:
-  User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0"
-  authority: "user.qzone.qq.com"
+  Dnt: '1'
+  Priority: u=1, i
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+    like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0
+  accept: '*/*'
+  accept-language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7
+  authority: user.qzone.qq.com
+  cookie: ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850;
+    qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7;
+    _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2;
+    RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95;
+    token=CB66933E1484B647172FCF9492F89202; it_c=0; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b;
+    suid=user_0_a90341a78e064; qz_screen=1920x1080; __Q_w_s__QZN_TodoMsgCnt=1; __Q_w_s_hat_seed=1;
+    uin=o0437460307; p_uin=o0437460307; welcomeflash=549236781_1; pgv_info=ssid=s5305372300;
+    skey=@gQYmUSUmv; pt4_token=gU*kY9ND1fh5c7aqO4EIKJZJvI9kCSTgVA9mdBgDOY8_; p_skey=Ws8VZKSkyy7Vny0kQMBE2oD0Gsqp3KZPoXrHY*GRI3U_;
+    Loading=Yes; qzmusicplayer=qzone_player_437460307_1729219915831; qqmusic_uin=;
+    qqmusic_key=; qqmusic_fromtag=; cpu_performance_v8=25; rv2=807093A57AF9766CD1C35024D6C97412931644E91191F1C6E7;
+    property20=C1511F39AD77B5EC6D2138120C2F44C4741B7D1AF7485C6857FD911EEAA2EF37981360A014FA61A8
   sec-ch-ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
-  accept: "*/*"
-  sec-ch-ua-mobile: "?0"
-  sec-fetch-site: "same-origin"
-  sec-fetch-mode: "cors"
-  sec-fetch-dest: "empty"
-  accept-language: "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7"
-  Dnt: "1"
-  Priority: "u=1, i"
-  #  如果生成了文件夹中没有文件，意味着网站的Cookie失效，需要重新获取。
-  #  Cookie在浏览器中，按F2进入开发者工具，找到Network，看到很多文件选Fatch/XHR类型文件。
-  #  看到标签页"标头"，找到请求，找到请求标头，找到Cookie，复制粘贴到这里。
-  #  一定要将Cookie的内容加上引号，否则会报错。
-  #  ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-  cookie: "ptcz=dc033c4edfa213dfa52bfe5241945f87242e2345f828ee160bf562711ef1ac18; pgv_pvid=149336850; _clck=69wghg|2|ffr|0|1379; qq_domain_video_guid_verify=216279267643c94b; _qimei_uuid42=1810309271d10088a6e3f71254796e2480069178d7; _qimei_q36=; _qimei_h38=2db80559a6e3f71254796e2402000002718103; eas_sid=n1a760t743V894x0P460b962P2; RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; __Q_w_s_hat_seed=1; __Q_w_s__QZN_TodoMsgCnt=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95; token=CB66933E1484B647172FCF9492F89202; it_c=0; randomSeed=71534; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b; suid=user_0_a90341a78e064; qz_screen=1920x1080; welcomeflash=549236781_1; uin=o0437460307; skey=@Np73ukmhD; p_uin=o0437460307; pt4_token=1*Jd-N2WVRHCd9At*j98KCSXLJkAZisb00BxGvyLJvo_; p_skey=JcAki*A8LXmZuFZT9TDQyrFF1ShjLUazQ8PHIXi6tKg_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1727148762838; qqmusic_uin=0437460307; qqmusic_key=@Np73ukmhD; qqmusic_fromtag=6; pgv_info=ssid=s4016044902; cpu_performance_v8=45; rv2=807908EBAEB819D93CE36AB6420E2EE48FE2C59B38A64A8D4A; property20=D961B655998508D23DB594EA583EAB50365BEE8628516D2DC7FD8155DCC4E89AD6FED35E4BC5552C"
-
-#╚═════════════════════════════════════════════════════════════════════════════╝
+  sec-ch-ua-mobile: ?0
+  sec-fetch-dest: empty
+  sec-fetch-mode: cors
+  sec-fetch-site: same-origin
+qzone_pages: 1
+root_directory: F:/owl/Beta/root
+weibo_fetch_days: 2
+weibo_headers:
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate, br, zstd
+  Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7
+  Client-Version: v2.45.38
+  Cookie: UOR=,,cn.bing.com; SINAGLOBAL=3234014125719.2446.1716885728380; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFpIlcOwdGQ-iXMICYuovHv5JpX5KMhUgL.Fo-cSozc1hBfeKB2dJLoI0qLxKMLBKqL1h2LxKqLB-BLBKzLxKnL1hqL1-eLxKqL1hnL1K2LxK-LBKBLBoBLxK-L1heL12qt;
+    ULV=1727073808165:7:1:1:8426195069738.507.1727073808159:1720504108173; XSRF-TOKEN=ToHm7d7D_pgXh81JRESnHAi6;
+    ALF=1731651283; SUB=_2A25KCymCDeRhGeNI7VAX-CrJyjiIHXVpaSNKrDV8PUJbkNAbLRnskW1NSF2BWE_vpoYKEK-FvRpLENigg9t4CZ0t;
+    WBPSESS=sEv4Cq28yjXYeVvKaLIIIL8kzkNE9RjzvYXXKe-MHtxmXZCyiFYZ25eabg7p2ulCutWpZ3lt_nEMZgaNu68b0GA1Htv2upMAUD_UtsWq8pFDaZhDdHHG_slUo9Ysv3DRyldag6IUnrp8xgGXJfd79g==
+  Dnt: '1'
+  Priority: u=1, i
+  Sec-Ch-Ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
+  Sec-Ch-Ua-Mobile: ?0
+  Sec-Ch-Ua-Platform: '"Windows"'
+  Sec-Fetch-Dest: empty
+  Sec-Fetch-Mode: cors
+  Sec-Fetch-Site: same-origin
+  Server-Version: v2024.06.05.2
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+    like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0
+  X-Requested-With: XMLHttpRequest
+  X-Xsrf-Token: tMd3QBGKsmXjM94AtxgtFatg
+  authority: weibo.com
+  method: GET
+  scheme: https
+weibo_pages: 1

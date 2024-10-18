@@ -1,14 +1,12 @@
 import os
-
 import torch
-from emotion_analysis.src.model import BERTSentimentClassifier
-from transformers import BertTokenizer
+from emotion_analysis.roberta.model import RoBerta  # 使用 RoBerta 模型
+from transformers import AutoTokenizer  # 使用 AutoTokenizer
 import yaml
 
-
-class ModelInference:
+class RobertaInference:
     def __init__(self, config_path='./emotion_analysis/configs/config.yaml',
-                 model_path='./emotion_analysis/experiments/train/best_add.pt'):
+                 model_path='./emotion_analysis/experiments/roberta/best.pt'):
         # 检测绝对路径
         abs_path = os.path.abspath("./")
 
@@ -20,14 +18,13 @@ class ModelInference:
             self.config = yaml.safe_load(f)
 
         # 初始化tokenizer
-        self.tokenizer = BertTokenizer.from_pretrained(self.config['model']['pretrained_model_name'])
+        self.tokenizer = AutoTokenizer.from_pretrained(self.config['model']['pretrained_model_name'], clean_up_tokenization_spaces=False)
 
         # 加载模型
         num_labels = 10  # 类别数
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.model = BERTSentimentClassifier(self.config['model']['pretrained_model_name'], num_labels,
-                                             self.config['model']['dropout'])
-        self.model.load_state_dict(torch.load(model_path, weights_only=True))
+        self.model = RoBerta(self.config['model']['pretrained_model_name'], num_labels, self.config['model']['dropout'])
+        self.model.load_state_dict(torch.load(model_path, map_location=self.device), strict=False)
         self.model = self.model.to(self.device)
         self.model.eval()
 
@@ -64,10 +61,8 @@ class ModelInference:
 
         return predicted_label, predicted_score
 
-
-# 示例使用：
 if __name__ == "__main__":
-    model_inference = ModelInference()
+    model_inference = RobertaInference()
 
     # 定义言论列表
     texts = [

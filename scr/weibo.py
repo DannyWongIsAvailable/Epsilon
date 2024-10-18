@@ -2,7 +2,7 @@ import requests
 from requests.exceptions import RequestException, HTTPError, ConnectionError, Timeout
 import yaml
 import logging
-from scr.emotional_prediction import ModelInference  # 导入你实现的情感分析模型类
+from scr.roberta_prediction import RobertaInference  # 导入你实现的情感分析模型类
 from datetime import datetime
 
 
@@ -27,7 +27,7 @@ class WeiboScraper:
         print("weibo fetch days: ", self.fetch_days)
 
         # 初始化情感分析模型
-        self.model_inference = ModelInference()  # 实例化情感分析模型
+        self.model_inference = RobertaInference()  # 实例化情感分析模型
 
     def fetch_messages(self, uid):
         results = []

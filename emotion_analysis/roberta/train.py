@@ -1,16 +1,14 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from transformers import BertTokenizer
-from model import BERTSentimentClassifier  # 确保你已将回归模型改为分类模型
+from transformers import AutoTokenizer
+from model import RoBerta  # 导入修改后的模型类
 from data_loader import create_dataloader
 import yaml
 import os
 from tqdm import tqdm  # 进度条库
 import time  # 记录时间
 import logging  # 日志模块
-from sklearn.metrics import accuracy_score  # 用于计算准确率
-
 
 # 设置日志记录
 def setup_logging(log_file):
@@ -24,39 +22,54 @@ def setup_logging(log_file):
         ]
     )
 
-
 # 读取配置文件
 with open('../configs/config.yaml', 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
-# 初始化tokenizer
-tokenizer = BertTokenizer.from_pretrained(config['model']['pretrained_model_name'], clean_up_tokenization_spaces=True)
+# 更新预训练模型的名称，如果未在配置文件中指定，请确保这里使用 RoBERTa 模型的名称
+pretrained_model_name = config['model'].get('pretrained_model_name', 'hfl/chinese-roberta-wwm-ext')
+
+# 初始化tokenizer，使用 AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name, clean_up_tokenization_spaces=True)
 
 # 创建数据加载器
-train_dataloader = create_dataloader(config['data']['train_path'], tokenizer, config['data']['max_seq_length'],
-                                     config['training']['batch_size'], is_train=True)
-val_dataloader = create_dataloader(config['data']['val_path'], tokenizer, config['data']['max_seq_length'],
-                                   config['training']['batch_size'], is_train=True)
+train_dataloader = create_dataloader(
+    config['data']['train_path'],
+    tokenizer,
+    config['data']['max_seq_length'],
+    config['training']['batch_size'],
+    is_train=True
+)
+val_dataloader = create_dataloader(
+    config['data']['val_path'],
+    tokenizer,
+    config['data']['max_seq_length'],
+    config['training']['batch_size'],
+    is_train=True
+)
 
-# 初始化模型（改为分类模型），并微调指定的最后n层
+# 初始化模型，并微调指定的最后n层
 num_labels = 10  # 有 10 个类别
 fine_tune_last_n_layers = config['model'].get('freeze_layers', 0)  # 从配置文件中读取微调层数
 
 # 初始化模型并传入微调层数
-model = BERTSentimentClassifier(
-    config['model']['pretrained_model_name'],
+model = RoBerta(
+    pretrained_model_name,
     num_labels,
     config['model']['dropout'],
     fine_tune_last_n_layers=fine_tune_last_n_layers  # 仅微调最后n层
 )
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = model.to(device)
 
 # 定义损失函数和优化器
-loss_fn = nn.CrossEntropyLoss()  # 对于分类任务，使用CrossEntropyLoss
-optimizer = optim.AdamW(model.parameters(), lr=config['training']['learning_rate'],
-                        weight_decay=config['training']['weight_decay'])
-
+loss_fn = nn.CrossEntropyLoss()  # 对于分类任务，使用 CrossEntropyLoss
+optimizer = optim.AdamW(
+    filter(lambda p: p.requires_grad, model.parameters()),  # 仅优化需要更新的参数
+    lr=config['training']['learning_rate'],
+    weight_decay=config['training']['weight_decay']
+)
 
 # 设置保存模型路径
 def get_experiment_dir(base_dir):
@@ -68,7 +81,6 @@ def get_experiment_dir(base_dir):
             os.makedirs(experiment_dir, exist_ok=True)
             return experiment_dir
         experiment_id += 1
-
 
 # 使用函数生成带序号的实验文件夹
 base_experiment_dir = '../experiments'
@@ -95,8 +107,11 @@ for epoch in range(total_epochs):
     train_loss = 0.0
 
     # 在每个 epoch 中，使用 tqdm 包装训练数据加载器，显示进度条
-    train_progress_bar = tqdm(enumerate(train_dataloader), total=len(train_dataloader),
-                              desc=f"Epoch {epoch + 1}/{total_epochs}")
+    train_progress_bar = tqdm(
+        enumerate(train_dataloader),
+        total=len(train_dataloader),
+        desc=f"Epoch {epoch + 1}/{total_epochs}"
+    )
 
     for step, batch in train_progress_bar:
         input_ids = batch['input_ids'].to(device)
@@ -123,7 +138,7 @@ for epoch in range(total_epochs):
 
     train_accuracy = correct_predictions.double() / total_predictions
     avg_train_loss = train_loss / len(train_dataloader)
-    logging.info(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss}, Train Accuracy: {train_accuracy:.4f}")
+    logging.info(f"Epoch {epoch + 1}, Train Loss: {avg_train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
 
     # 验证集评估
     model.eval()
@@ -132,7 +147,11 @@ for epoch in range(total_epochs):
     total_val_predictions = 0
 
     with torch.no_grad():
-        val_progress_bar = tqdm(enumerate(val_dataloader), total=len(val_dataloader), desc=f"Validation {epoch}")
+        val_progress_bar = tqdm(
+            enumerate(val_dataloader),
+            total=len(val_dataloader),
+            desc=f"Validation {epoch + 1}/{total_epochs}"
+        )
 
         for step, batch in val_progress_bar:
             input_ids = batch['input_ids'].to(device)
@@ -151,13 +170,13 @@ for epoch in range(total_epochs):
 
     avg_val_loss = total_val_loss / len(val_dataloader)
     val_accuracy = correct_val_predictions.double() / total_val_predictions
-    logging.info(f"Epoch {epoch + 1}, Validation Loss: {avg_val_loss}, Validation Accuracy: {val_accuracy:.4f}")
+    logging.info(f"Epoch {epoch + 1}, Validation Loss: {avg_val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
 
     # 如果验证集损失下降，保存模型
     if avg_val_loss < best_val_loss:
         best_val_loss = avg_val_loss
         torch.save(model.state_dict(), best_model_path)
-        logging.info(f"Best model saved with Validation Loss: {avg_val_loss}")
+        logging.info(f"Best model saved with Validation Loss: {avg_val_loss:.4f}")
 
 # 最终保存模型
 final_model_path = os.path.join(experiment_dir, 'final.pt')

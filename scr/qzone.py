@@ -3,7 +3,7 @@ import re
 import json
 import yaml
 import logging
-from scr.emotional_prediction import ModelInference  # 导入你实现的情感分析模型类
+from scr.roberta_prediction import RobertaInference  # 导入你实现的情感分析模型类
 from datetime import datetime, timedelta
 
 # 设置日志记录，只输出到控制台，不保存到文件
@@ -28,7 +28,7 @@ class QQZoneScraper:
         print("qzone fetch days:", self.fetch_days)
 
         # 初始化情感分析模型
-        self.model_inference = ModelInference()  # 实例化情感分析模型
+        self.model_inference = RobertaInference()  # 实例化情感分析模型
 
     @staticmethod
     def load_config():

@@ -1,8 +1,8 @@
 import os
 import torch
-from emotion_analysis.src.model import BERTSentimentClassifier  # 确保这是分类模型的导入
+from emotion_analysis.roberta.model import RoBerta  # 修改为 RoBerta 模型的导入
 from emotion_analysis.src.data_loader import create_dataloader
-from transformers import BertTokenizer
+from transformers import AutoTokenizer  # 修改为 AutoTokenizer
 import yaml
 import pandas as pd
 
@@ -11,7 +11,7 @@ with open('../configs/config.yaml', 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
 # 初始化tokenizer
-tokenizer = BertTokenizer.from_pretrained(config['model']['pretrained_model_name'])
+tokenizer = AutoTokenizer.from_pretrained(config['model']['pretrained_model_name'])
 
 # 加载测试集
 test_dataloader = create_dataloader(
@@ -24,14 +24,14 @@ test_dataloader = create_dataloader(
 
 # 加载分类模型
 num_labels = 10  # 根据分类任务中类别数设定
-model = BERTSentimentClassifier(config['model']['pretrained_model_name'], num_labels, config['model']['dropout'])
-model.load_state_dict(torch.load('../experiments/train/best_add.pt'))
+model = RoBerta(config['model']['pretrained_model_name'], num_labels, config['model']['dropout'])
+model.load_state_dict(torch.load('../experiments/roberta/best.pt'))
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = model.to(device)
 
 # 定义类别映射和分数映射
 labels = ["绝望、羞愧", "悲伤、痛苦", "恐惧、焦虑", "愤怒、不满", "警惕、不耐烦",
-              "厌倦、冷淡", "平淡、淡定", "乐观、认可", "坚定、勇气", "幸福、喜悦"]
+          "厌倦、冷淡", "平淡、淡定", "乐观、认可", "坚定、勇气", "幸福、喜悦"]
 scores = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90"]
 
 # 评估模型
@@ -43,8 +43,14 @@ with torch.no_grad():
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
 
+        # 如果使用了 token_type_ids，也需要传递它们
+        if 'token_type_ids' in batch:
+            token_type_ids = batch['token_type_ids'].to(device)
+            outputs = model(input_ids, attention_mask, token_type_ids)
+        else:
+            outputs = model(input_ids, attention_mask)
+
         # 模型输出为类别概率分布，取最大值作为预测类别
-        outputs = model(input_ids, attention_mask)
         _, predicted_label_indices = torch.max(outputs, dim=1)
 
         # 将预测的整数索引映射回类别名称和分数
