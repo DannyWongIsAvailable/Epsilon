@@ -13,18 +13,17 @@ qzone_headers:
     RK=6StkxdlHWz; pac_uid=0_a90341a78e064; iip=0; QZ_FE_WEBP_SUPPORT=1; fopenid=F2F2BFC6FD2AE086252622D5C8D46E95;
     token=CB66933E1484B647172FCF9492F89202; it_c=0; _qimei_fingerprint=6a7616775ae3e4103d169a092213c08b;
     suid=user_0_a90341a78e064; qz_screen=1920x1080; __Q_w_s__QZN_TodoMsgCnt=1; __Q_w_s_hat_seed=1;
-    uin=o0437460307; p_uin=o0437460307; welcomeflash=549236781_1; pgv_info=ssid=s5305372300;
-    skey=@gQYmUSUmv; pt4_token=gU*kY9ND1fh5c7aqO4EIKJZJvI9kCSTgVA9mdBgDOY8_; p_skey=Ws8VZKSkyy7Vny0kQMBE2oD0Gsqp3KZPoXrHY*GRI3U_;
-    Loading=Yes; qzmusicplayer=qzone_player_437460307_1729219915831; qqmusic_uin=;
-    qqmusic_key=; qqmusic_fromtag=; cpu_performance_v8=25; rv2=807093A57AF9766CD1C35024D6C97412931644E91191F1C6E7;
-    property20=C1511F39AD77B5EC6D2138120C2F44C4741B7D1AF7485C6857FD911EEAA2EF37981360A014FA61A8
+    cpu_performance_v8=25; uin=o0437460307; skey=@mjzF1NZTk; p_uin=o0437460307; pt4_token=hXNY2jct1S0YHqhnp3TrZ5ah5k9CcTMYEf98ILZgvRc_;
+    p_skey=Gsv20lA4ifkoZLXSm*H6CCPhki3MTvqIRg4Usoaow-w_; Loading=Yes; qzmusicplayer=qzone_player_437460307_1729570751466;
+    qqmusic_uin=0437460307; qqmusic_key=@mjzF1NZTk; qqmusic_fromtag=6; pgv_info=ssid=s2839198557;
+    randomSeed=182469; rv2=80EFE595CB5C30EC5DD81947FFDBD4BE18927A264286A23DD3; property20=1996E37D37A2AF011C754B14EAED9AB6EB5BA7D2A0828CE22E8F894CD9C12D0C0353A836DA2B0C51
   sec-ch-ua: '"Microsoft Edge";v="125", "Chromium";v="125", "Not.A/Brand";v="24"'
   sec-ch-ua-mobile: ?0
   sec-fetch-dest: empty
   sec-fetch-mode: cors
   sec-fetch-site: same-origin
 qzone_pages: 1
-root_directory: F:/owl/Beta/root
+root_directory: F:/owl/root
 weibo_fetch_days: 2
 weibo_headers:
   Accept: application/json, text/plain, */*

@@ -77,6 +77,7 @@ class Worker(QThread):
 
             # 获取当前时间
             current_time = datetime.now()
+
             # 创建班级信息JSON结构
             class_info = {
                 "班级信息": {
@@ -88,93 +89,85 @@ class Worker(QThread):
                 "学生动态": {}
             }
 
-            select_list = []  # 用于存储一个班级中每个学生的最低情感得分记录
+            select_list = []
 
             for index, row in data.iterrows():
                 if not self._is_running:
                     return
                 student_id = str(row['学号'])
-                student_name = str(row['姓名'])  # 确保转换为字符串
+                student_name = str(row['姓名'])
 
                 class_info["学生动态"][student_name] = []
 
                 weibo_id = row['微博']
                 if not pd.isna(weibo_id):
-                    weibo_id = str(weibo_id)  # 确保转换为字符串
-                    weibo_posts = self.retry_fetch_and_save(self.weibo, "微博", class_info, weibo_id, student_id, student_name)
+                    weibo_id = str(weibo_id)
+                    weibo_posts = self.retry_fetch_and_save(self.weibo, "微博", class_info, weibo_id, student_id,
+                                                            student_name)
                     class_info["学生动态"][student_name].extend(weibo_posts)
 
                 qzone_id = row['qq空间']
                 if not pd.isna(qzone_id):
-                    qzone_id = str(qzone_id)  # 确保转换为字符串
-                    qzone_posts = self.retry_fetch_and_save(self.qzone, 'qq空间', class_info, qzone_id, student_id, student_name)
+                    qzone_id = str(qzone_id)
+                    qzone_posts = self.retry_fetch_and_save(self.qzone, 'qq空间', class_info, qzone_id, student_id,
+                                                            student_name)
                     class_info["学生动态"][student_name].extend(qzone_posts)
 
-                # 保留最低情感得分的动态
                 if class_info["学生动态"][student_name]:
-                    min_score_post = min(class_info["学生动态"][student_name], key=lambda x: int(x.get("情感得分", "100")))
+                    min_score_post = min(class_info["学生动态"][student_name],
+                                         key=lambda x: int(x.get("情感得分", "100")))
                     select_list.append({
                         "学号": student_id,
                         "姓名": student_name,
-                        **min_score_post  # 包含post里的所有键
+                        **min_score_post
                     })
                 else:
-                    # 如果没有动态，保留学生信息，但不包含动态
                     select_list.append({
                         "学号": student_id,
                         "姓名": student_name
                     })
 
-            # 为每个班级的学生保存 Excel
             if select_list:
                 base_name = os.path.basename(file_path)
-                class_filename = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}.xlsx")
+                analysis_folder = os.path.join(os.path.dirname(self.folder_path), "..", "今日整合分析")
+                os.makedirs(analysis_folder, exist_ok=True)
+
+                analysis_file = os.path.join(analysis_folder, f"{os.path.splitext(base_name)[0]}.xlsx")
                 select_df = pd.DataFrame(select_list)
 
-                # 添加“社交预警”列
                 if '情感得分' in select_df.columns:
                     select_df['社交预警'] = select_df['情感得分'].apply(
-                        lambda x: '紧急关注' if pd.notnull(x) and int(x) < 20 else ''
-                    )
+                        lambda x: '紧急关注' if pd.notnull(x) and int(x) < 20 else '')
                 else:
                     select_df['社交预警'] = ''
 
                 sheet_name = f"社交原表"
 
-                # 保存DataFrame到Excel
-                select_df.to_excel(class_filename, index=False, sheet_name=sheet_name)
-                self.result.emit(f"\n{file_path} 的每人最低分数据已保存到 {class_filename}")
+                if os.path.exists(analysis_file):
+                    with pd.ExcelWriter(analysis_file, mode='a', engine='openpyxl') as writer:
+                        select_df.to_excel(writer, index=False, sheet_name=sheet_name)
+                else:
+                    select_df.to_excel(analysis_file, index=False, sheet_name=sheet_name)
+
+                self.result.emit(f"\n{file_path} 的每人最低分数据已保存到 {analysis_file}")
 
                 try:
-                    # 打开已存在的Excel文件
-                    wb = load_workbook(class_filename)
-                    ws = wb.active
+                    wb = load_workbook(analysis_file)
+                    ws = wb[sheet_name]
 
-                    # 插入数据字典内容到Excel顶部
                     start_row = 1
                     for key, value in class_info["班级信息"].items():
                         ws.insert_rows(start_row)
                         ws.cell(row=start_row, column=1, value=key)
-                        ws.cell(row=start_row, column=2, value=value)  # 直接将值写入第2列
+                        ws.cell(row=start_row, column=2, value=value)
                         start_row += 1
 
-                    # 保存修改后的Excel文件
-                    wb.save(class_filename)
+                    wb.save(analysis_file)
                 except Exception as e:
-                    self.result.emit(f"\n保存表格失败")
+                    self.result.emit(f"\n保存表格失败: {str(e)}")
 
                 finally:
-                    # 确保工作簿被关闭
                     wb.close()
-
-            # 保存班级信息和header_dict到JSON文件，文件名为输入的Excel文件名
-            json_filename = os.path.splitext(base_name)[0] + ".json"
-            class_filename = os.path.join(output_folder, json_filename)
-            class_info["header"] = header_dict  # 将header_dict信息也保存进去
-            with open(class_filename, 'w', encoding='utf-8') as f:
-                json.dump(class_info, f, ensure_ascii=False, indent=4, default=str)
-
-            self.result.emit(f"\n{file_path} 的所有帖子已保存到 {class_filename}")
         except Exception as e:
             self.result.emit(f"Error processing file {file_path}: {str(e)}")
 
@@ -243,7 +236,8 @@ class Worker(QThread):
             for task in tasks:
                 self.result.emit(f"\n重新处理: {task['student_name']} (ID: {task['id']}) 的{platform}动态")
                 scraper = WeiboScraper() if platform == "微博" else QQZoneScraper()
-                posts = self.retry_fetch_and_save(scraper, platform, task['id'], task['student_id'], task['student_name'])
+                posts = self.retry_fetch_and_save(scraper, platform, task['id'], task['student_id'],
+                                                  task['student_name'])
 
                 if posts:  # 如果重试成功获取到动态
                     if task['student_name'] not in retry_results:

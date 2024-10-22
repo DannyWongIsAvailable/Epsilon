@@ -325,7 +325,7 @@ class MainWindow(QMainWindow):
     def view_analysis_results(self):
         if self.save_folder_path:
             # 查找同级目录下名为 "输出——社交指数评分" 的目录
-            results_folder = os.path.join(os.path.dirname(self.save_folder_path), "输出——社交指数评分")
+            results_folder = os.path.join(os.path.dirname(self.save_folder_path),"..", "今日整合分析")
             if os.path.exists(results_folder):
                 # 打开目录使用文件系统默认查看器
                 os.startfile(results_folder)
