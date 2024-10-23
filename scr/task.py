@@ -129,10 +129,16 @@ class Worker(QThread):
 
             if select_list:
                 base_name = os.path.basename(file_path)
+
+                # 定义analysis_folder路径
                 analysis_folder = os.path.join(os.path.dirname(self.folder_path), "..", "今日整合分析")
                 os.makedirs(analysis_folder, exist_ok=True)
-
                 analysis_file = os.path.join(analysis_folder, f"{os.path.splitext(base_name)[0]}.xlsx")
+
+                # 定义output_folder路径
+                output_file = os.path.join(output_folder, f"{os.path.splitext(base_name)[0]}.xlsx")
+
+                # 创建数据框
                 select_df = pd.DataFrame(select_list)
 
                 if '情感得分' in select_df.columns:
@@ -143,33 +149,65 @@ class Worker(QThread):
 
                 sheet_name = f"社交原表"
 
-                if os.path.exists(analysis_file):
-                    with pd.ExcelWriter(analysis_file, mode='a', engine='openpyxl') as writer:
-                        select_df.to_excel(writer, index=False, sheet_name=sheet_name)
-                else:
-                    select_df.to_excel(analysis_file, index=False, sheet_name=sheet_name)
+                # 保存到 analysis_folder 路径
+                self.save_to_excel(analysis_file, select_df, class_info, sheet_name)
 
-                self.result.emit(f"\n{file_path} 的每人最低分数据已保存到 {analysis_file}")
+                # 保存到 output_folder 路径
+                self.save_to_excel(output_file, select_df, class_info, sheet_name)
 
-                try:
-                    wb = load_workbook(analysis_file)
-                    ws = wb[sheet_name]
+                self.result.emit(f"\n{file_path} 的每人最低分数据已保存到 {analysis_file} 和 {output_file}")
 
-                    start_row = 1
-                    for key, value in class_info["班级信息"].items():
-                        ws.insert_rows(start_row)
-                        ws.cell(row=start_row, column=1, value=key)
-                        ws.cell(row=start_row, column=2, value=value)
-                        start_row += 1
-
-                    wb.save(analysis_file)
-                except Exception as e:
-                    self.result.emit(f"\n保存表格失败: {str(e)}")
-
-                finally:
-                    wb.close()
         except Exception as e:
             self.result.emit(f"Error processing file {file_path}: {str(e)}")
+
+    def save_to_excel(self, file_path, select_df, class_info, sheet_name):
+        """保存Excel文件的辅助方法"""
+        try:
+            wb = None  # 初始化wb变量
+
+            # 确保保存路径的目录存在
+            output_dir = os.path.dirname(file_path)
+            os.makedirs(output_dir, exist_ok=True)  # 如果路径不存在，创建路径
+
+            # 如果文件不存在，先创建文件并写入数据
+            if not os.path.exists(file_path):
+                with pd.ExcelWriter(file_path, mode='w', engine='openpyxl') as writer:
+                    select_df.to_excel(writer, index=False, sheet_name=sheet_name)
+
+            # 文件存在，检查并删除已存在的工作表
+            else:
+                wb = load_workbook(file_path)
+                if sheet_name in wb.sheetnames:
+                    del wb[sheet_name]
+                wb.save(file_path)
+                wb.close()
+
+                # 使用 pd.ExcelWriter 追加新的工作表
+                with pd.ExcelWriter(file_path, mode='a', engine='openpyxl') as writer:
+                    select_df.to_excel(writer, index=False, sheet_name=sheet_name)
+
+            # 重新加载Excel文件，确保数据已写入
+            wb = load_workbook(file_path)
+
+            # 如果工作表不存在，则创建新的工作表
+            if sheet_name not in wb.sheetnames:
+                ws = wb.create_sheet(sheet_name)
+            else:
+                ws = wb[sheet_name]
+
+            start_row = 1
+            for key, value in class_info["班级信息"].items():
+                ws.insert_rows(start_row)
+                ws.cell(row=start_row, column=1, value=key)
+                ws.cell(row=start_row, column=2, value=value)
+                start_row += 1
+
+            wb.save(file_path)
+        except Exception as e:
+            self.result.emit(f"\n保存表格失败: {str(e)}")
+        finally:
+            if wb is not None:  # 确保在wb存在时调用close
+                wb.close()
 
     def retry_fetch_and_save(self, scraper, platform, class_info, id, student_id, student_name):
         retry_count = 0
